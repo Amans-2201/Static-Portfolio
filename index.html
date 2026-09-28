@@ -172,6 +172,80 @@
       transform: translateY(-1px);
     }
 
+    .small-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .small-btn.primary {
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      border: none;
+      color: white;
+    }
+
+    .admin-password-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 24px;
+    }
+
+    .admin-password-modal.hidden {
+      display: none;
+    }
+
+    .admin-password-box {
+      width: min(420px, 100%);
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+      padding: 26px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .admin-password-box h3 {
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .admin-password-box p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .admin-password-box input {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      font: inherit;
+      margin-bottom: 16px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .admin-password-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
     main {
       padding: 42px 0 72px;
     }
@@ -635,7 +709,19 @@
     }
 
     @media (max-width: 700px) {
-      .nav-links { display: none; }
+      .nav {
+        height: auto;
+        padding: 12px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px 18px;
+      }
 
       .metrics-grid,
       .charts-grid,
@@ -652,21 +738,34 @@
     <div class="container nav">
       <div class="brand">
         <span class="brand-mark">A</span>
-        Alex Morgan
+        <span id="brandName">Alex Morgan</span>
       </div>
 
       <nav class="nav-links" aria-label="Main navigation">
         <a href="#about">About</a>
-        <a href="#projects">Projects</a>
+        <a href="#projects">Project</a>
         <a href="#experience">Experience</a>
         <a href="#contact">Contact</a>
       </nav>
 
       <div class="nav-actions">
         <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <a href="./index.html?adminportal" class="small-btn">Edit Info</a>
       </div>
     </div>
   </header>
+
+  <div id="adminPasswordModal" class="admin-password-modal hidden" aria-hidden="true">
+    <div class="admin-password-box">
+      <h3>Admin access</h3>
+      <p>Enter the password to open the admin portal.</p>
+      <input id="adminPasswordInput" type="password" placeholder="Password" />
+      <div class="admin-password-actions">
+        <button id="adminPasswordCancel" type="button" class="small-btn">Cancel</button>
+        <button id="adminPasswordSubmit" type="button" class="small-btn primary">Open</button>
+      </div>
+    </div>
+  </div>
 
   <main>
     <div class="container">
@@ -674,17 +773,17 @@
         <div class="hero-copy">
           <div class="profile-mini">
             <div class="profile-mini-photo">
-              <img src="./dummy-profile.jpg" alt="Profile portrait" />
+              <img id="profileImage" src="./dummy-profile.jpg" alt="Profile portrait" />
             </div>
             <div class="profile-mini-meta">
-              <strong>Alex Morgan</strong>
-              <a href="https://github.com/alexmorgan" target="_blank" rel="noreferrer">github.com/alexmorgan</a>
+              <strong id="profileName">Alex Morgan</strong>
+              <a id="profileGithubLink" href="https://github.com/alexmorgan" target="_blank" rel="noreferrer">github.com/alexmorgan</a>
             </div>
           </div>
 
-          <div class="eyebrow">Data Analyst • Storyteller</div>
-          <h1>I turn <span class="highlight">raw data</span> into business momentum.</h1>
-          <p>
+          <div id="heroEyebrow" class="eyebrow">Data Analyst • Storyteller</div>
+          <h1 id="heroTitle">I turn <span class="highlight">raw data</span> into business momentum.</h1>
+          <p id="heroDescription">
             I help teams make faster, smarter decisions by combining advanced analytics,
             clear dashboards, and operational insight. My work bridges data strategy and
             business execution across product, marketing, and operations.
@@ -695,7 +794,7 @@
             <a href="#projects" class="secondary-btn">View Projects</a>
           </div>
 
-          <div class="mini-stats">
+          <div id="miniStats" class="mini-stats">
             <div class="mini-stat">
               <strong>5+</strong>
               <span>Years experience</span>
@@ -742,13 +841,13 @@
       <section class="content-grid">
         <aside class="stack">
           <div class="panel">
-            <h2 class="panel-title">Professional Summary</h2>
-            <p class="about-text">
+            <h2 id="summaryTitle" class="panel-title">Professional Summary</h2>
+            <p id="summaryText" class="about-text">
               I design meaningful analytics systems that help teams see trends, act on opportunities,
               and build confidence in decision-making. My expertise sits at the intersection of SQL,
               business intelligence, marketing analytics, and experimentation.
             </p>
-            <div class="skill-grid">
+            <div id="skillGrid" class="skill-grid">
               <span class="skill-tag">Python</span>
               <span class="skill-tag">SQL</span>
               <span class="skill-tag">Power BI</span>
@@ -761,10 +860,10 @@
           <div class="panel">
             <h2 class="panel-title">Contact</h2>
             <ul class="contact-list" id="contact">
-              <li><span class="contact-dot"></span> alex.morgan@email.com</li>
-              <li><span class="contact-dot"></span> New York, NY</li>
-              <li><span class="contact-dot"></span> linkedin.com/in/alexmorgan</li>
-              <li><span class="contact-dot"></span> +1 (415) 224-9901</li>
+              <li><span class="contact-dot"></span> <span id="contactEmail">alex.morgan@email.com</span></li>
+              <li><span class="contact-dot"></span> <span id="contactLocation">New York, NY</span></li>
+              <li><span class="contact-dot"></span> <span id="contactLinkedin">linkedin.com/in/alexmorgan</span></li>
+              <li><span class="contact-dot"></span> <span id="contactPhone">+1 (415) 224-9901</span></li>
             </ul>
           </div>
         </aside>
@@ -825,7 +924,7 @@
 
           <div class="panel" id="experience">
             <h2 class="panel-title">Selected Experience</h2>
-            <div class="timeline">
+            <div id="experienceTimeline" class="timeline">
               <div class="timeline-item">
                 <span class="timeline-date">2024 — Present</span>
                 <h4>Lead Analytics Architect — FinTech Corp</h4>
@@ -850,10 +949,99 @@
     </div>
   </main>
 
+  <script src="./portfolio-data.js"></script>
   <script>
     const body = document.body;
     const themeToggle = document.getElementById('themeToggle');
     const downloadResumeBtn = document.getElementById('downloadResumeBtn');
+    const adminPasswordModal = document.getElementById('adminPasswordModal');
+    const adminPasswordInput = document.getElementById('adminPasswordInput');
+    const adminPasswordSubmit = document.getElementById('adminPasswordSubmit');
+    const adminPasswordCancel = document.getElementById('adminPasswordCancel');
+
+    const portfolioApiUrl = 'https://portfolio-admin-app.onrender.com/api/portfolio';
+
+    async function fetchPortfolioData() {
+      try {
+        const response = await fetch(portfolioApiUrl);
+        if (!response.ok) throw new Error('API request failed');
+        return await response.json();
+      } catch (error) {
+        console.warn('Failed to load remote portfolio data, falling back to local data.', error);
+        return window.portfolioData || {};
+      }
+    }
+
+    let portfolioData = {};
+
+    async function loadPortfolioData() {
+      portfolioData = await fetchPortfolioData();
+      renderPage();
+    }
+
+    const storageKey = window.portfolioStorageKey || 'alex-morgan-portfolio-data';
+    const baseData = window.portfolioData || {};
+
+    function savePortfolioData() {
+      localStorage.setItem(storageKey, JSON.stringify(portfolioData));
+    }
+
+    function savePortfolioData() {
+      localStorage.setItem(storageKey, JSON.stringify(portfolioData));
+    }
+
+    function renderStats() {
+      const statsContainer = document.getElementById('miniStats');
+      if (!statsContainer) return;
+      statsContainer.innerHTML = (portfolioData.stats || []).map((stat) => `
+        <div class="mini-stat">
+          <strong>${stat.value}</strong>
+          <span>${stat.label}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderSkills() {
+      const skillGrid = document.getElementById('skillGrid');
+      if (!skillGrid) return;
+      skillGrid.innerHTML = (portfolioData.skills || []).map((skill) => `<span class="skill-tag">${skill}</span>`).join('');
+    }
+
+    function renderExperience() {
+      const experienceTimeline = document.getElementById('experienceTimeline');
+      if (!experienceTimeline) return;
+      experienceTimeline.innerHTML = (portfolioData.experience || []).map((item) => `
+        <div class="timeline-item">
+          <span class="timeline-date">${item.period}</span>
+          <h4>${item.title}</h4>
+          <p>${item.text}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderPage() {
+      document.getElementById('brandName').textContent = portfolioData.site?.brand || 'Alex Morgan';
+      document.getElementById('profileName').textContent = portfolioData.profile?.name || 'Alex Morgan';
+      document.getElementById('profileImage').src = portfolioData.profile?.image || './dummy-profile.jpg';
+      document.getElementById('profileGithubLink').href = portfolioData.profile?.githubUrl || portfolioData.site?.githubUrl || 'https://github.com/alexmorgan';
+      document.getElementById('profileGithubLink').textContent = portfolioData.profile?.githubText || portfolioData.site?.github || 'github.com/alexmorgan';
+      document.getElementById('heroEyebrow').textContent = portfolioData.hero?.eyebrow || 'Data Analyst • Storyteller';
+      document.getElementById('heroTitle').innerHTML = portfolioData.hero?.title || 'I turn <span class="highlight">raw data</span> into business momentum.';
+      document.getElementById('heroDescription').textContent = portfolioData.hero?.description || 'I help teams...';
+      document.getElementById('summaryTitle').textContent = portfolioData.summary?.title || 'Professional Summary';
+      document.getElementById('summaryText').textContent = portfolioData.summary?.text || 'I design meaningful analytics systems...';
+      document.getElementById('contactEmail').textContent = portfolioData.contact?.email || 'alex.morgan@email.com';
+      document.getElementById('contactLocation').textContent = portfolioData.contact?.location || 'New York, NY';
+      document.getElementById('contactLinkedin').textContent = portfolioData.contact?.linkedin || 'linkedin.com/in/alexmorgan';
+      document.getElementById('contactPhone').textContent = portfolioData.contact?.phone || '+1 (415) 224-9901';
+
+      renderStats();
+      renderSkills();
+      renderExperience();
+    }
+
+    themeToggle.style.display = 'inline-flex';
+    themeToggle.setAttribute('aria-hidden', 'false');
 
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark');
@@ -867,20 +1055,33 @@
       }
 
       const { jsPDF } = window.jspdf;
-      const captureTarget = document.body;
+      const hiddenSelectors = ['.topbar', '.nav-links', '.nav-actions', '.theme-toggle', '.hero-actions', '.secondary-btn', '.primary-btn', '.small-btn'];
+      const previousDisplayMap = {};
+
+      hiddenSelectors.forEach((selector) => {
+        const el = document.querySelector(selector);
+        if (el) {
+          previousDisplayMap[selector] = el.style.display;
+          el.style.display = 'none';
+        }
+      });
 
       try {
-        const canvas = await html2canvas(captureTarget, {
+        const canvas = await window.html2canvas(document.body, {
           scale: 2,
           useCORS: true,
-          allowTaint: true,
-          backgroundColor: getComputedStyle(document.body).backgroundColor || '#f4f7fb'
+          backgroundColor: getComputedStyle(document.body).backgroundColor || '#f4f7fb',
+          width: document.body.scrollWidth,
+          height: document.body.scrollHeight,
+          scrollX: 0,
+          scrollY: 0
         });
 
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
+
         const imgWidth = pageWidth;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -891,7 +1092,7 @@
         heightLeft -= pageHeight;
 
         while (heightLeft > 0) {
-          position = heightLeft - imgHeight;
+          position = position - pageHeight;
           pdf.addPage();
           pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
@@ -900,9 +1101,18 @@
         pdf.save('Alex_Morgan_Resume.pdf');
       } catch (error) {
         console.error('PDF export failed:', error);
-        alert('The page could not be exported to PDF. Please try again.');
+        alert('The resume could not be exported. Please try again.');
+      } finally {
+        hiddenSelectors.forEach((selector) => {
+          const el = document.querySelector(selector);
+          if (el && selector in previousDisplayMap) {
+            el.style.display = previousDisplayMap[selector];
+          }
+        });
       }
     });
+
+    loadPortfolioData();
 
     const skillsChart = document.getElementById('skillsChart');
     const domainChart = document.getElementById('domainChart');
