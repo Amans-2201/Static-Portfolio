@@ -958,7 +958,6 @@
     const adminPasswordInput = document.getElementById('adminPasswordInput');
     const adminPasswordSubmit = document.getElementById('adminPasswordSubmit');
     const adminPasswordCancel = document.getElementById('adminPasswordCancel');
-    const ADMIN_PASSWORD = 'Jimmy123';
     const adminPortalUrl = (window.location.hostname === 'localhost' || window.location.protocol === 'file:')
       ? './admin.html?adminportal'
       : 'https://portfolio-admin-app.onrender.com/admin';
@@ -972,19 +971,6 @@
     }
 
     function openAdminPortal() {
-      const typedPassword = adminPasswordInput.value.trim();
-      if (!typedPassword) {
-        adminPasswordInput.focus();
-        return;
-      }
-
-      if (typedPassword !== ADMIN_PASSWORD) {
-        adminPasswordInput.value = '';
-        adminPasswordInput.focus();
-        alert('Incorrect password. Please try again.');
-        return;
-      }
-
       adminPasswordInput.value = '';
       window.location.href = adminPortalUrl;
     }
