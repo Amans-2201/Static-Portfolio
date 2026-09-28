@@ -309,6 +309,9 @@
 
     .eyebrow {
       display: inline-flex;
+      align-self: flex-start;
+      width: fit-content;
+      max-width: 100%;
       align-items: center;
       gap: 8px;
       padding: 8px 14px;
@@ -872,33 +875,7 @@
 
           <div class="panel" id="projects">
             <h2 class="panel-title">Featured Work</h2>
-            <div class="project-grid">
-              <article class="project-card">
-                <div class="project-top">
-                  <span class="project-pill">Growth</span>
-                  <strong>+24%</strong>
-                </div>
-                <h4>Revenue Intelligence Dashboard</h4>
-                <p>Designed a multi-channel performance model that unified product and marketing analytics for executive monitoring.</p>
-                <div class="project-metric">
-                  <span>ROI uplift</span>
-                  <strong>24%</strong>
-                </div>
-              </article>
-
-              <article class="project-card">
-                <div class="project-top">
-                  <span class="project-pill">Automation</span>
-                  <strong>6 hrs</strong>
-                </div>
-                <h4>Automated KPI Reporting</h4>
-                <p>Built a unified weekly reporting pipeline reducing manual reporting time and improving business responsiveness.</p>
-                <div class="project-metric">
-                  <span>Saved per week</span>
-                  <strong>6 hrs</strong>
-                </div>
-              </article>
-            </div>
+            <div id="featuredWorkGrid" class="project-grid"></div>
           </div>
 
           <div class="panel" id="experience">
@@ -1043,6 +1020,30 @@
       `).join('');
     }
 
+    function renderFeaturedWork() {
+      const featuredWorkGrid = document.getElementById('featuredWorkGrid');
+      if (!featuredWorkGrid) return;
+      const defaultFeaturedWork = [
+        { category: 'Growth', highlight: '+24%', title: 'Revenue Intelligence Dashboard', description: 'Designed a multi-channel performance model that unified product and marketing analytics for executive monitoring.', metricLabel: 'ROI uplift', metricValue: '24%' },
+        { category: 'Automation', highlight: '6 hrs', title: 'Automated KPI Reporting', description: 'Built a unified weekly reporting pipeline reducing manual reporting time and improving business responsiveness.', metricLabel: 'Saved per week', metricValue: '6 hrs' }
+      ];
+      const featuredWork = Array.isArray(portfolioData.featuredWork) ? portfolioData.featuredWork : defaultFeaturedWork;
+      featuredWorkGrid.innerHTML = featuredWork.map((item) => `
+        <article class="project-card">
+          <div class="project-top">
+            <span class="project-pill">${item.category || ''}</span>
+            <strong>${item.highlight || ''}</strong>
+          </div>
+          <h4>${item.title || ''}</h4>
+          <p>${item.description || ''}</p>
+          <div class="project-metric">
+            <span>${item.metricLabel || ''}</span>
+            <strong>${item.metricValue || ''}</strong>
+          </div>
+        </article>
+      `).join('');
+    }
+
     function renderCharts() {
       const coreSkills = Array.isArray(portfolioData.coreSkills) && portfolioData.coreSkills.length
         ? portfolioData.coreSkills
@@ -1158,6 +1159,7 @@
       renderStats();
       renderKeyMetrics();
       renderSkills();
+      renderFeaturedWork();
       renderExperience();
       renderCharts();
     }
