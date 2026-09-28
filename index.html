@@ -958,6 +958,36 @@
     const adminPasswordInput = document.getElementById('adminPasswordInput');
     const adminPasswordSubmit = document.getElementById('adminPasswordSubmit');
     const adminPasswordCancel = document.getElementById('adminPasswordCancel');
+    const ADMIN_PASSWORD = 'Jimmy123';
+    const adminPortalUrl = (window.location.hostname === 'localhost' || window.location.protocol === 'file:')
+      ? './admin.html?adminportal'
+      : 'https://portfolio-admin-app.onrender.com/admin';
+
+    function showAdminModal(isVisible) {
+      adminPasswordModal.classList.toggle('hidden', !isVisible);
+      adminPasswordModal.setAttribute('aria-hidden', String(!isVisible));
+      if (isVisible) {
+        setTimeout(() => adminPasswordInput.focus(), 50);
+      }
+    }
+
+    function openAdminPortal() {
+      const typedPassword = adminPasswordInput.value.trim();
+      if (!typedPassword) {
+        adminPasswordInput.focus();
+        return;
+      }
+
+      if (typedPassword !== ADMIN_PASSWORD) {
+        adminPasswordInput.value = '';
+        adminPasswordInput.focus();
+        alert('Incorrect password. Please try again.');
+        return;
+      }
+
+      adminPasswordInput.value = '';
+      window.location.href = adminPortalUrl;
+    }
 
     const portfolioApiUrl = 'https://portfolio-admin-app.onrender.com/api/portfolio';
 
@@ -1042,6 +1072,26 @@
 
     themeToggle.style.display = 'inline-flex';
     themeToggle.setAttribute('aria-hidden', 'false');
+
+    document.querySelector('.small-btn').addEventListener('click', (event) => {
+      event.preventDefault();
+      showAdminModal(true);
+    });
+
+    adminPasswordSubmit.addEventListener('click', openAdminPortal);
+    adminPasswordCancel.addEventListener('click', () => {
+      adminPasswordInput.value = '';
+      showAdminModal(false);
+    });
+    adminPasswordInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        openAdminPortal();
+      }
+    });
+
+    if (new URLSearchParams(window.location.search).has('adminportal')) {
+      showAdminModal(true);
+    }
 
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark');
