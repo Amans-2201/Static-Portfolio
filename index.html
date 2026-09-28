@@ -949,11 +949,18 @@
     </div>
   </main>
 
+  <footer style="padding: 20px 0 40px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.2);">
+    <div class="container" style="text-align: center; color: var(--muted); font-size: 0.95rem; letter-spacing: 0.01em;">
+      © <span id="copyrightYear">2026</span> Data Hobbyist. All rights reserved.
+    </div>
+  </footer>
+
   <script src="./portfolio-data.js"></script>
   <script>
     const body = document.body;
     const themeToggle = document.getElementById('themeToggle');
     const downloadResumeBtn = document.getElementById('downloadResumeBtn');
+    document.getElementById('copyrightYear').textContent = new Date().getFullYear();
     const adminPasswordModal = document.getElementById('adminPasswordModal');
     const adminPasswordInput = document.getElementById('adminPasswordInput');
     const adminPasswordSubmit = document.getElementById('adminPasswordSubmit');
@@ -1039,6 +1046,54 @@
       `).join('');
     }
 
+    function renderCharts() {
+      const focusAreas = Array.isArray(portfolioData.focusAreas) && portfolioData.focusAreas.length
+        ? portfolioData.focusAreas
+        : [
+            { label: 'Analytics', value: 45 },
+            { label: 'Product', value: 35 },
+            { label: 'Insights', value: 20 }
+          ];
+
+      const focusLabels = focusAreas.map((item) => item.label || '').filter(Boolean);
+      const focusValues = focusAreas.map((item) => Number(item.value) || 0);
+
+      const domainChartEl = document.getElementById('domainChart');
+      if (domainChartEl) {
+        const existingChart = Chart.getChart(domainChartEl);
+        if (existingChart) existingChart.destroy();
+
+        new Chart(domainChartEl, {
+          type: 'doughnut',
+          data: {
+            labels: focusLabels,
+            datasets: [{
+              data: focusValues,
+              backgroundColor: ['#4f46e5', '#10b981', '#f59e0b'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  color: getComputedStyle(document.body).getPropertyValue('--muted'),
+                  usePointStyle: true,
+                  pointStyle: 'circle',
+                  boxWidth: 8,
+                  padding: 18
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
     function renderPage() {
       document.getElementById('brandName').textContent = portfolioData.site?.brand || 'Alex Morgan';
       document.getElementById('profileName').textContent = portfolioData.profile?.name || 'Alex Morgan';
@@ -1058,6 +1113,7 @@
       renderStats();
       renderSkills();
       renderExperience();
+      renderCharts();
     }
 
     themeToggle.style.display = 'inline-flex';
@@ -1155,67 +1211,41 @@
     loadPortfolioData();
 
     const skillsChart = document.getElementById('skillsChart');
-    const domainChart = document.getElementById('domainChart');
+    if (skillsChart) {
+      const existingSkillsChart = Chart.getChart(skillsChart);
+      if (existingSkillsChart) existingSkillsChart.destroy();
 
-    new Chart(skillsChart, {
-      type: 'bar',
-      data: {
-        labels: ['SQL', 'Python', 'Power BI', 'Tableau', 'Excel', 'Forecasting'],
-        datasets: [{
-          label: 'Skill Strength',
-          data: [92, 88, 90, 84, 86, 80],
-          backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a78bfa', '#c4b5fd', '#8b5cf6'],
-          borderRadius: 10,
-          borderSkipped: false
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid') },
-            ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
-          },
-          x: {
-            grid: { display: false },
-            ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
-          }
-        }
-      }
-    });
-
-    new Chart(domainChart, {
-      type: 'doughnut',
-      data: {
-        labels: ['Analytics', 'Product', 'Insights'],
-        datasets: [{
-          data: [45, 35, 20],
-          backgroundColor: ['#4f46e5', '#10b981', '#f59e0b'],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '60%',
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: getComputedStyle(document.body).getPropertyValue('--muted'),
-              usePointStyle: true,
-              pointStyle: 'circle',
-              boxWidth: 8,
-              padding: 18
+      new Chart(skillsChart, {
+        type: 'bar',
+        data: {
+          labels: ['SQL', 'Python', 'Power BI', 'Tableau', 'Excel', 'Forecasting'],
+          datasets: [{
+            label: 'Skill Strength',
+            data: [92, 88, 90, 84, 86, 80],
+            backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a78bfa', '#c4b5fd', '#8b5cf6'],
+            borderRadius: 10,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid') },
+              ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
             }
           }
         }
-      }
-    });
+      });
+    }
   </script>
 </body>
 </html>
