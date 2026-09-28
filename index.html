@@ -252,15 +252,17 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: minmax(0, 1fr);
       align-items: center;
-      gap: 30px;
+      gap: 0;
       padding: 34px 0 20px;
     }
 
     .hero-copy {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      max-width: 1480px;
     }
 
     .profile-mini {
@@ -322,7 +324,7 @@
 
     h1 {
       font-size: clamp(2.8rem, 5vw, 5rem);
-      line-height: 0.96;
+      line-height: 1;
       letter-spacing: -0.065em;
       margin: 18px 0 18px;
     }
@@ -330,7 +332,7 @@
     .highlight { color: var(--primary); }
 
     .hero-copy p {
-      max-width: 680px;
+      max-width: 1040px;
       color: var(--muted);
       line-height: 1.7;
       font-size: 1.04rem;
@@ -374,9 +376,7 @@
     }
 
     .hero-visual {
-      position: relative;
-      display: flex;
-      justify-content: center;
+      display: none;
     }
 
     .profile-card {
@@ -815,28 +815,7 @@
         </div>
       </section>
 
-      <section class="metrics-grid" aria-label="Key statistics">
-        <div class="metric-card">
-          <div class="kicker">Experience</div>
-          <strong>5+ yrs</strong>
-          <span>Across SaaS, fintech, and commerce</span>
-        </div>
-        <div class="metric-card">
-          <div class="kicker">Automation</div>
-          <strong>85%</strong>
-          <span>Reporting workflows automated</span>
-        </div>
-        <div class="metric-card">
-          <div class="kicker">Efficiency</div>
-          <strong>35%</strong>
-          <span>Faster decision cycles</span>
-        </div>
-        <div class="metric-card">
-          <div class="kicker">Impact</div>
-          <strong>14%</strong>
-          <span>Conversion wins through insights</span>
-        </div>
-      </section>
+      <section id="keyMetrics" class="metrics-grid" aria-label="Key statistics"></section>
 
       <section class="content-grid">
         <aside class="stack">
@@ -1028,6 +1007,24 @@
       `).join('');
     }
 
+    function renderKeyMetrics() {
+      const metricsContainer = document.getElementById('keyMetrics');
+      if (!metricsContainer) return;
+      const metrics = portfolioData.keyMetrics || [
+        { label: 'Experience', value: '5+ yrs', detail: 'Across SaaS, fintech, and commerce' },
+        { label: 'Automation', value: '85%', detail: 'Reporting workflows automated' },
+        { label: 'Efficiency', value: '35%', detail: 'Faster decision cycles' },
+        { label: 'Impact', value: '14%', detail: 'Conversion wins through insights' }
+      ];
+      metricsContainer.innerHTML = metrics.map((metric) => `
+        <div class="metric-card">
+          <div class="kicker">${metric.label}</div>
+          <strong>${metric.value}</strong>
+          <span>${metric.detail}</span>
+        </div>
+      `).join('');
+    }
+
     function renderSkills() {
       const skillGrid = document.getElementById('skillGrid');
       if (!skillGrid) return;
@@ -1047,6 +1044,54 @@
     }
 
     function renderCharts() {
+      const coreSkills = Array.isArray(portfolioData.coreSkills) && portfolioData.coreSkills.length
+        ? portfolioData.coreSkills
+        : [
+            { label: 'SQL', value: 92 },
+            { label: 'Python', value: 88 },
+            { label: 'Power BI', value: 90 },
+            { label: 'Tableau', value: 84 },
+            { label: 'Excel', value: 86 },
+            { label: 'Forecasting', value: 80 }
+          ];
+
+      const skillsChartEl = document.getElementById('skillsChart');
+      if (skillsChartEl) {
+        const existingChart = Chart.getChart(skillsChartEl);
+        if (existingChart) existingChart.destroy();
+
+        new Chart(skillsChartEl, {
+          type: 'bar',
+          data: {
+            labels: coreSkills.map((skill) => skill.label || ''),
+            datasets: [{
+              label: 'Skill Strength',
+              data: coreSkills.map((skill) => Number(skill.value) || 0),
+              backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a78bfa', '#c4b5fd', '#8b5cf6'],
+              borderRadius: 10,
+              borderSkipped: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid') },
+                ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
+              },
+              x: {
+                grid: { display: false },
+                ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
+              }
+            }
+          }
+        });
+      }
+
       const focusAreas = Array.isArray(portfolioData.focusAreas) && portfolioData.focusAreas.length
         ? portfolioData.focusAreas
         : [
@@ -1111,6 +1156,7 @@
       document.getElementById('contactPhone').textContent = portfolioData.contact?.phone || '+1 (415) 224-9901';
 
       renderStats();
+      renderKeyMetrics();
       renderSkills();
       renderExperience();
       renderCharts();
@@ -1209,43 +1255,6 @@
     });
 
     loadPortfolioData();
-
-    const skillsChart = document.getElementById('skillsChart');
-    if (skillsChart) {
-      const existingSkillsChart = Chart.getChart(skillsChart);
-      if (existingSkillsChart) existingSkillsChart.destroy();
-
-      new Chart(skillsChart, {
-        type: 'bar',
-        data: {
-          labels: ['SQL', 'Python', 'Power BI', 'Tableau', 'Excel', 'Forecasting'],
-          datasets: [{
-            label: 'Skill Strength',
-            data: [92, 88, 90, 84, 86, 80],
-            backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a78bfa', '#c4b5fd', '#8b5cf6'],
-            borderRadius: 10,
-            borderSkipped: false
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid') },
-              ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
-            },
-            x: {
-              grid: { display: false },
-              ticks: { color: getComputedStyle(document.body).getPropertyValue('--muted') }
-            }
-          }
-        }
-      });
-    }
   </script>
 </body>
 </html>
